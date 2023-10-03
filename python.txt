@@ -1,0 +1,48 @@
+pingPin = 7
+red = 11
+blue = 10
+green = 9
+
+def setup():
+    Serial.begin(9600)
+    pinMode(red, OUTPUT)
+    pinMode(blue, OUTPUT)
+    pinMode(green, OUTPUT)
+    pinMode(3, OUTPUT)
+
+def loop():
+    digitalWrite(3, HIGH)
+    delay(1000)
+    digitalWrite(3, LOW)
+    delay(1000)
+    duration, inches, cm = 0, 0, 0
+    pinMode(pingPin, OUTPUT)
+    digitalWrite(pingPin, LOW)
+    delayMicroseconds(2)
+    digitalWrite(pingPin, HIGH)
+    delayMicroseconds(5)
+    digitalWrite(pingPin, LOW)
+    pinMode(pingPin, INPUT)
+    duration = pulseIn(pingPin, HIGH)
+    inches = microsecondsToInches(duration)
+    cm = microsecondsToCentimeters(duration)
+    Serial.print(inches)
+    Serial.print("in, ")
+    Serial.print(cm)
+    Serial.print("cm")
+    Serial.println()
+    if cm < 256:
+        analogWrite(red, cm)
+        analogWrite(blue, 255 - cm)
+        analogWrite(green, inches)
+    else:
+        analogWrite(red, 0)
+        analogWrite(blue, 0)
+        analogWrite(green, 0)
+    delay(100)
+
+def microsecondsToInches(microseconds):
+    return microseconds / 74 / 2
+
+def microsecondsToCentimeters(microseconds):
+    return microseconds / 29 / 2
